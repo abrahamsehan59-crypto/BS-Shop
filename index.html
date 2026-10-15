@@ -258,6 +258,19 @@
       );
     }
   </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "COLLE_ICI_TON_ADRESSE_SUPABASE";
+const SUPABASE_KEY = "COLLE_ICI_TA_CLE_PUBLIQUE";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+console.log("Connexion à Supabase préparée !");
+</script>
 
 </body>
     </html>
