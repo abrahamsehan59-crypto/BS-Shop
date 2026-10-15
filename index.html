@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BS Shop - Ma boutique</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      color: #222;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    header p {
+      margin-bottom: 0;
+    }
+
+    .search {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .search input {
+      width: 100%;
+      max-width: 500px;
+      padding: 13px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      padding: 15px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .product {
+      background: white;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px #00000012;
+    }
+
+    .product img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .product h3 {
+      font-size: 16px;
+    }
+
+    .price {
+      color: #087443;
+      font-weight: bold;
+    }
+
+    button {
+      background: #087443;
+      color: white;
+      border: none;
+      padding: 11px;
+      border-radius: 7px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #065d36;
+    }
+
+    #cart {
+      margin: 20px 15px;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+    }
+
+    #cartItems {
+      padding-left: 20px;
+    }
+
+    footer {
+      background: #111827;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🛍️ BS SHOP</h1>
+    <p>Tout ce dont tu as besoin, au même endroit !</p>
+  </header>
+
+  <div class="search">
+    <input
+      type="search"
+      id="search"
+      placeholder="Rechercher un produit..."
+      oninput="filterProducts()"
+    >
+  </div>
+
+  <h2>Nos produits</h2>
+
+  <div class="products" id="products">
+
+    <div class="product" data-name="montre">
+      <img src="https://placehold.co/300x200?text=Montre" alt="Montre">
+      <h3>Montre</h3>
+      <p class="price">5 000 FCFA</p>
+      <button onclick="addToCart('Montre', 5000)">Ajouter au panier</button>
+    </div>
+
+    <div class="product" data-name="chaussures">
+      <img src="https://placehold.co/300x200?text=Chaussures" alt="Chaussures">
+      <h3>Chaussures</h3>
+      <p class="price">15 000 FCFA</p>
+      <button onclick="addToCart('Chaussures', 15000)">Ajouter au panier</button>
+    </div>
+
+    <div class="product" data-name="telephone">
+      <img src="https://placehold.co/300x200?text=Telephone" alt="Téléphone">
+      <h3>Téléphone</h3>
+      <p class="price">75 000 FCFA</p>
+      <button onclick="addToCart('Téléphone', 75000)">Ajouter au panier</button>
+    </div>
+
+    <div class="product" data-name="sac">
+      <img src="https://placehold.co/300x200?text=Sac" alt="Sac">
+      <h3>Sac</h3>
+      <p class="price">10 000 FCFA</p>
+      <button onclick="addToCart('Sac', 10000)">Ajouter au panier</button>
+    </div>
+
+  </div>
+
+  <section id="cart">
+    <h2>🛒 Mon panier</h2>
+    <ul id="cartItems"></ul>
+    <p><strong>Total : <span id="total">0</span> FCFA</strong></p>
+    <button onclick="orderWhatsApp()">Commander sur WhatsApp</button>
+  </section>
+
+  <footer>
+    <p>© 2026 BS Shop - Tous droits réservés.</p>
+  </footer>
+
+  <script>
+    let cart = [];
+
+    function addToCart(name, price) {
+      cart.push({name, price});
+      displayCart();
+      alert(name + " ajouté au panier !");
+    }
+
+    function displayCart() {
+      const items = document.getElementById("cartItems");
+      items.innerHTML = "";
+
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        total += item.price;
+
+        const li = document.createElement("li");
+        li.textContent = item.name + " - " +
+          item.price.toLocaleString("fr-FR") + " FCFA ";
+
+        const remove = document.createElement("button");
+        remove.textContent = "Retirer";
+        remove.style.width = "auto";
+        remove.style.margin = "5px";
+        remove.onclick = function() {
+          cart.splice(index, 1);
+          displayCart();
+        };
+
+        li.appendChild(remove);
+        items.appendChild(li);
+      });
+
+      document.getElementById("total").textContent =
+        total.toLocaleString("fr-FR");
+    }
+
+    function filterProducts() {
+      const query = document.getElementById("search")
+        .value.toLowerCase();
+
+      document.querySelectorAll(".product").forEach(product => {
+        product.style.display =
+          product.dataset.name.includes(query) ? "" : "none";
+      });
+    }
+
+    function orderWhatsApp() {
+      if (cart.length === 0) {
+        alert("Ton panier est vide !");
+        return;
+      }
+
+      const message = "Bonjour BS Shop ! Je souhaite commander :\n" +
+        cart.map(item => item.name + " : " +
+          item.price + " FCFA").join("\n") +
+        "\nTotal : " +
+        cart.reduce((sum, item) => sum + item.price, 0) +
+        " FCFA";
+
+      const phone = prompt(
+        "Entre le numéro WhatsApp de ta boutique, avec l'indicatif du pays, sans le signe + :"
+      );
+
+      if (!phone || !/^\d{8,15}$/.test(phone)) {
+        alert("Numéro invalide. Réessaie avec le bon numéro.");
+        return;
+      }
+
+      window.open(
+        "https://wa.me/" + phone + "?text=" +
+        encodeURIComponent(message),
+        "_blank"
+      );
+    }
+  </script>
+
+</body>
+    </html>
