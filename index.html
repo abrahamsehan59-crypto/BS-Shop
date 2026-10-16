@@ -231,9 +231,51 @@
 
     async function orderWhatsApp() {
   if (cart.length === 0) {
-    alert("Votre panier est vide !");
+    alert("Ton panier est vide !");
     return;
   }
+
+  const phone = "2250104356440";
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+  const message = "Bonjour BS Shop ! Je souhaite commander :\n" +
+    cart.map(item => item.name + " : " +
+      item.price.toLocaleString("fr-FR") + " FCFA").join("\n") +
+    "\nTotal : " + total.toLocaleString("fr-FR") + " FCFA";
+
+  const { data: order, error } = await supabaseClient
+    .from("orders")
+    .insert([{ total: total, status: "pending" }])
+    .select()
+    .single();
+
+  if (error) {
+    alert("Erreur Supabase : " + error.message);
+    return;
+  }
+
+  const items = cart.map(item => ({
+    order_id: order.id,
+    product_name: item.name,
+    quantity: 1,
+    price: item.price
+  }));
+
+  const { error: itemError } = await supabaseClient
+    .from("order_items")
+    .insert(items);
+
+  if (itemError) {
+    alert("Erreur des articles : " + itemError.message);
+    return;
+  }
+
+  window.open(
+    "https://wa.me/" + phone + "?text=" +
+    encodeURIComponent(message),
+    "_blank"
+  );
+    }
 
   const phone = "2250104356440";
   const total = cart.reduce(
